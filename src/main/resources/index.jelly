@@ -1,4 +1,4 @@
 <?jelly escape-by-default='true'?>
 <div>
-    TODO
+    Adds Microsoft SQL Server connectivity to the database plugin
 </div>
