@@ -6,6 +6,12 @@ import hudson.Extension;
 import hudson.Util;
 import hudson.util.FormValidation;
 import hudson.util.Secret;
+import java.sql.Driver;
+import java.sql.DriverPropertyInfo;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import jenkins.model.Jenkins;
 import org.jenkinsci.plugins.database.AbstractRemoteDatabase;
 import org.jenkinsci.plugins.database.AbstractRemoteDatabaseDescriptor;
@@ -13,15 +19,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.verb.POST;
 
-import java.io.Serializable;
-import java.sql.Driver;
-import java.sql.DriverPropertyInfo;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Set;
+public class SQLServerDatabase extends AbstractRemoteDatabase {
 
-public class SQLServerDatabase extends AbstractRemoteDatabase implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @DataBoundConstructor
@@ -57,14 +56,14 @@ public class SQLServerDatabase extends AbstractRemoteDatabase implements Seriali
             try {
                 Set<String> validPropertyNames = new HashSet<String>();
                 Properties props = Util.loadProperties(properties);
-                for (DriverPropertyInfo p : new SQLServerDriver().getPropertyInfo("jdbc:sqlserver://localhost;databaseName=dummy", props)) {
+                for (DriverPropertyInfo p :
+                        new SQLServerDriver().getPropertyInfo("jdbc:sqlserver://localhost;databaseName=dummy", props)) {
                     validPropertyNames.add(p.name);
                 }
 
                 for (Map.Entry<Object, Object> e : props.entrySet()) {
                     String key = e.getKey().toString();
-                    if (!validPropertyNames.contains(key))
-                        return FormValidation.error("Unrecognized property: " + key);
+                    if (!validPropertyNames.contains(key)) return FormValidation.error("Unrecognized property: " + key);
                 }
                 return FormValidation.ok();
             } catch (Throwable e) {
